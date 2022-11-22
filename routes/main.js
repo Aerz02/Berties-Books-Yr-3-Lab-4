@@ -209,7 +209,7 @@ module.exports = (app, shopData) => {
         app.get('/weather', (req, res) => res.render('weather.ejs', shopData));
         //weather api
         app.post('/weather', [check('city').exists().isAlpha()], (req,res) => {
-
+            
             const request = require('request');
             let apiKey = '3c944b26a99110b9157e34f63e62de59';
             let city = req.sanitize(req.body.city);
@@ -229,6 +229,17 @@ module.exports = (app, shopData) => {
                     }
                     else res.send("No data found");
                 }
+            });
+        });
+        // api route
+        app.get('/api', (req, res) => {
+            // Query database to get all the books
+            let sqlquery = "SELECT * FROM books";
+            // Execute the sql query
+            db.query(sqlquery, (err, result) => {
+                if (err) res.redirect('./');
+                // Return results as a JSON object
+                res.json(result);
             });
         });
     }
