@@ -1,13 +1,12 @@
 module.exports = (app, shopData) => {
-    // Handle our routes
     
+    // Handle our routes
     // pasword encryption module 
     const bcrypt = require('bcrypt');
-    
     // once logged in can pages be accessed
     const redirectLogin = (req, res, next) => {
-        if (!req.session.userId) { res.redirect('./login') }
-        else { next(); }
+        if (!req.session.userId)  res.redirect('./login')
+        else next(); 
     }
     // validation
     const { check, validationResult } = require('express-validator');
@@ -21,7 +20,7 @@ module.exports = (app, shopData) => {
     app.get('/search', redirectLogin, (req, res) => res.render("search.ejs", shopData));
     
     // search result page route
-    app.get('/search-result', check('keyword').exists().isAlphanumeric(),(req, res) => {
+    app.get('/search-result', check('keyword').exists().isAlphanumeric(), (req, res) => {
         //searching in the database
         let sqlquery = "SELECT * FROM books WHERE name LIKE '%" + req.sanitize(req.query.keyword) + "%'"; // query database to get all the books
         // execute sql query
@@ -44,13 +43,13 @@ module.exports = (app, shopData) => {
         // check email 
         check('email', 'Not an email').exists().isEmail(),
         // check password
-        check('password').exists().isLength({min: 8}).withMessage('Password Must Be at Least 8 Characters'),
+        check('password').exists().isLength({ min: 8 }).withMessage('Password Must Be at Least 8 Characters'),
         //checks username
         check('username').exists().isAscii()], (req, res) => {
             // checks validation
             const errors = validationResult(req);
             //if there are error, redirect to the register page
-            if (! errors.isEmpty()) res.redirect('./register');
+            if (!errors.isEmpty()) res.redirect('./register');
             else {
                 // saving data in database
                 const saltRounds = 10;
@@ -61,13 +60,13 @@ module.exports = (app, shopData) => {
                     // Store hashed password in your database
                     let sqlquery = 'INSERT INTO users (first, last, username, email, password) VALUES( ?, ?, ?, ?, ?)';
                     let newUser = [req.sanitize(req.body.first), req.sanitize(req.body.last), req.sanitize(req.body.username), req.sanitize(req.body.email), hashedPassword];
-                    db.query(sqlquery, newUser, (err, result) => { 
+                    db.query(sqlquery, newUser, (err, result) => {
                         if (err) return console.error(err.message);
                     });
                     
                     message = 'Hello ' + req.sanitize(req.body.first) + ' ' + req.sanitize(req.body.last) + ' you are now registered! We will send an email to you at ' + req.sanitize(req.body.email);
                     message += ' Your password is: ' + plainPassword + ' and your hashed password is: ' + hashedPassword;
-                    res.send(message +  '<a href='+'./'+'> Home page</a>');
+                    res.send(message + '<a href=' + './' + '> Home page</a>');
                 });
             }
         });
@@ -77,14 +76,14 @@ module.exports = (app, shopData) => {
         // logging in user
         app.post('/loggedin', (req, res) => {
             // user object for sanitised form inputs
-            let user = {username: req.sanitize(req.body.username), password: req.sanitize(req.body.password)};
+            let user = { username: req.sanitize(req.body.username), password: req.sanitize(req.body.password) };
             //checks if user exists
             let sqlquery = "SELECT username, password FROM users WHERE username = ?";
             db.query(sqlquery, user.username, (err, result) => {
                 //redirect to home page if there's an error
                 if (err) console.log(err.message);
                 // checks if an empty set is returned
-                else if (result.length === 0) res.send("User" + user.username + " doesn't exists. If you want you can register with it." + '<a href='+'./register'+'>Register page</a>')
+                else if (result.length === 0) res.send("User" + user.username + " doesn't exists. If you want you can register with it." + '<a href=' + './register' + '>Register page</a>')
                 // user exists
                 else {
                     console.log("User " + user.username + " does exist.");
@@ -97,7 +96,7 @@ module.exports = (app, shopData) => {
                             // Save user session here, when login is successful
                             req.session.userId = user.username;
                             console.log(user.username + " has logged in successfully.");
-                            res.send(user.username + " has logged in successfully " +  '<a href=./>Home page</a>');
+                            res.send(user.username + " has logged in successfully " + '<a href=./>Home page</a>');
                         }
                         // password don't match
                         else {
@@ -153,22 +152,22 @@ module.exports = (app, shopData) => {
                 //return error message if there's an error
                 if (err) console.error(err.message);
                 // checks if an empty set is returned
-                else if (result.length === 0){
+                else if (result.length === 0) {
                     console.log("Username: " + username + " doesn't exist");
-                    res.send("User " + username + " doesn't exist. " + 'Please enter a registered username to delete <a href=' + './deleteusers' + '> Delete users page</a>');   
+                    res.send("User " + username + " doesn't exist. " + 'Please enter a registered username to delete <a href=' + './deleteusers' + '> Delete users page</a>');
                 }
                 // if the user exists then delete the user.
-                else{
+                else {
                     console.log("User " + username + " exists");
                     let sqlquery = 'DELETE FROM users WHERE username = ? ';
                     db.query(sqlquery, username, (err, result) => {
                         //return error message if there's an error
-                        if (err)console.error(err.message);
+                        if (err) console.error(err.message);
                         else {
                             console.log("User " + username + " has been deleted");
                             res.send("User " + username + " has been deleted" + '<a href=' + './listusers' + '> List users page</a>');
                         }
-                    }); 
+                    });
                 }
             });
         });
@@ -179,7 +178,7 @@ module.exports = (app, shopData) => {
         });
         
         // adding book to database
-        app.post('/bookadded', [check('name').exists().isAlphanumeric(), check('price').exists().isDecimal({force_decimal: true, decimal_digits: 2, locale: 'en-US'})], (req, res) => {
+        app.post('/bookadded', [check('name').exists().isAlphanumeric(), check('price').exists().isDecimal({ force_decimal: true, decimal_digits: 2, locale: 'en-US' })], (req, res) => {
             // saving data in database
             let sqlquery = "INSERT INTO books (name, price) VALUES (?,?)";
             // execute sql query
@@ -208,24 +207,24 @@ module.exports = (app, shopData) => {
         //weather page route
         app.get('/weather', (req, res) => res.render('weather.ejs', shopData));
         //weather api
-        app.post('/weather', [check('city').exists().isAlpha()], (req,res) => {
-            
+        app.get('/weather-result', [check('city').exists().isAlpha()], (req, res) => {
             const request = require('request');
             let apiKey = '3c944b26a99110b9157e34f63e62de59';
-            let city = req.sanitize(req.body.city);
-            let url =`http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${apiKey}`;
-            
+            let city = req.sanitize(req.query.city);
+            let url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
             request(url, function (err, response, body) {
-                if(err)console.log('error:', error);
+                if (err) console.log('error:', error);
                 else {
                     // res.send(body);
                     var weather = JSON.parse(body);
-                    if (weather!= undefined && weather.main!==undefined) {
-                        var wmsg = 'It is '+ weather.main.temp + ' ºC in '+ weather.name + '!' +
-                        ' <br> The humidity now is: ' + weather.main.humidity + "%" +
-                        '<br> The wind now has a speed of ' + weather.wind.speed + 'mph';
+                    if (weather !== undefined && weather.main !== undefined) {
+                        var wmsg = 'It is ' + weather.main.temp + ' ºC in ' + weather.name + '!' +
+                        '<br> The humidity now is: ' + weather.main.humidity + "%" +
+                        '<br> The wind now has a speed of ' + weather.wind.speed + ' meters/sec' +
+                        '<br> Sunrise is at ' + unixToTime(weather.sys.sunrise) +
+                        '<br> Sunset is at ' + unixToTime(weather.sys.sunset);
                         console.log(weather);
-                        res.send (wmsg +  '<br> <a href=./>Home page</a>');
+                        res.send(wmsg + '<br> <a href=./>Home page</a>');
                     }
                     else res.send("No data found");
                 }
@@ -233,13 +232,34 @@ module.exports = (app, shopData) => {
         });
         // api route
         app.get('/api', (req, res) => {
-            // Query database to get all the books
-            let sqlquery = "SELECT * FROM books";
-            // Execute the sql query
-            db.query(sqlquery, (err, result) => {
-                if (err) res.redirect('./');
-                // Return results as a JSON object
-                res.json(result);
-            });
+            // console.log(req.query);
+            if (Object.entries(req.query).length === 0 || Object.keys(req.query).length === 0) {
+                // Query database to get all the books
+                let sqlquery = "SELECT * FROM books";
+                // Execute the sql query
+                db.query(sqlquery, (err, result) => {
+                    if (err) res.redirect('./');
+                    console.log(result);
+                    // Return results as a JSON object
+                    res.json(result);
+                });
+            } 
+            else{
+                // get keyword from url
+                let keyword = req.sanitize(req.query.keyword);
+                // query database to get all the books
+                let sqlquery = "SELECT * FROM books WHERE name LIKE '%" + keyword + "%'";
+                // Execute the sql query
+                db.query(sqlquery, (err, result) => {
+                    if (err) res.redirect('./');
+                    console.log(result);
+                    // Return results as a JSON object
+                    res.json(result);
+                });
+            }
         });
+        
+        //convert unix timestamp which is in seconds to 12 hour time string
+        //date constructor requires milliseconds 
+        const unixToTime = (unixTimeStamp) => new Date(unixTimeStamp * 10**3).toLocaleTimeString('en-US');
     }
