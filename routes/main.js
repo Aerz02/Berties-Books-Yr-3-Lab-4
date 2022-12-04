@@ -258,7 +258,72 @@ module.exports = (app, shopData) => {
                 });
             }
         });
+        // tv shows route
+        app.get('/tvshows', (req, res) => res.render('tvshows.ejs', shopData));
         
+        // tv shows api
+        app.get('/tvshows-result', 
+        // checks if the name is has only letters and numbers
+        check('name').exists().isAlphanumeric(),
+        (req, res) => {
+            const request = require('request');
+            // console.log(req.query);
+            let name = req.sanitize(req.query.name);
+            let url = `https://api.tvmaze.com/search/shows?q=${name}`;
+            request(url, function (err, response, body) {
+                if (err) console.log('error:', error);
+                else {
+                    let showDetails = JSON.parse(body);
+                    console.log(showDetails);
+                    if (showDetails !== undefined || showDetails.show !== undefined) {
+                        var details = "";
+                        showDetails.forEach(element => {
+                            // show that has ended
+                            if (element.show.ended != null) {
+                                if (element.show.network == null){
+                                    var msg = 
+                                    "Name: " + element.show.name + "<br>" + 
+                                    "Network: Unknown <br>" + 
+                                    "Status: " + element.show.status + "<br>" +
+                                    "Duration: " + new Date(element.show.premiered).getFullYear() + " - " +  new Date(element.show.ended).getFullYear() + "<br>" +
+                                    "Genre: " + element.show.genres + "<br>";
+                                }
+                                else{
+                                    var msg = 
+                                    "Name: " + element.show.name + "<br>" + 
+                                    "Network: " + element.show.network.name + "<br>" + 
+                                    "Status: " + element.show.status + "<br>" +
+                                    "Duration: " + new Date(element.show.premiered).getFullYear() + " - " +  new Date(element.show.ended).getFullYear() + "<br>" +
+                                    "Genre: " + element.show.genres + "<br>";
+                                }
+                            }
+                            // on going show
+                            else{
+                                if (element.show.network == null){
+                                    var msg = 
+                                    "Name: " + element.show.name + "<br>" + 
+                                    "Network: Unknown <br>" + 
+                                    "Status: " + element.show.status + "<br>" +
+                                    "Duration: " + new Date(element.show.premiered).getFullYear() + " - " +  new Date(element.show.ended).getFullYear() + "<br>" +
+                                    "Genre: " + element.show.genres + "<br>";
+                                }
+                                else{
+                                    var msg = 
+                                    "Name: " + element.show.name + "<br>" + 
+                                    "Network: " + element.show.network.name + "<br>" + 
+                                    "Status: " + element.show.status + "<br>" +
+                                    "Duration: " + new Date(element.show.premiered).getFullYear() + " - Now <br>" +
+                                    "Genre: " + element.show.genres + "<br>";
+                                }
+                            }
+                            details += msg +"<br>";
+                        });
+                        res.send(details);
+                    }
+                    else res.send("No data found");
+                }
+            })
+        });
         //convert unix timestamp which is in seconds to 12 hour time string
         //date constructor requires milliseconds 
         const unixToTime = (unixTimeStamp) => new Date(unixTimeStamp * 10**3).toLocaleTimeString('en-US');
