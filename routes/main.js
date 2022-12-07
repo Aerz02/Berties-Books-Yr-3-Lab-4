@@ -283,6 +283,7 @@ module.exports = (app, shopData) => {
                                 if (element.show.network == null){
                                     var msg = 
                                     "Name: " + element.show.name + "<br>" + 
+                                    "<img src=" + element.show.image.medium +"> <br>" +
                                     "Network: Unknown <br>" + 
                                     "Status: " + element.show.status + "<br>" +
                                     "Duration: " + new Date(element.show.premiered).getFullYear() + " - " +  new Date(element.show.ended).getFullYear() + "<br>" +
@@ -290,7 +291,8 @@ module.exports = (app, shopData) => {
                                 }
                                 else{
                                     var msg = 
-                                    "Name: " + element.show.name + "<br>" + 
+                                    "Name: " + element.show.name + "<br>" +
+                                    "<img src=" + element.show.image.medium +"> <br>" +
                                     "Network: " + element.show.network.name + "<br>" + 
                                     "Status: " + element.show.status + "<br>" +
                                     "Duration: " + new Date(element.show.premiered).getFullYear() + " - " +  new Date(element.show.ended).getFullYear() + "<br>" +
@@ -301,7 +303,8 @@ module.exports = (app, shopData) => {
                             else{
                                 if (element.show.network == null){
                                     var msg = 
-                                    "Name: " + element.show.name + "<br>" + 
+                                    "Name: " + element.show.name + "<br>" +
+                                    "<img src=" + element.show.image.medium +"> <br>" +
                                     "Network: Unknown <br>" + 
                                     "Status: " + element.show.status + "<br>" +
                                     "Duration: " + new Date(element.show.premiered).getFullYear() + " - " +  new Date(element.show.ended).getFullYear() + "<br>" +
@@ -309,7 +312,8 @@ module.exports = (app, shopData) => {
                                 }
                                 else{
                                     var msg = 
-                                    "Name: " + element.show.name + "<br>" + 
+                                    "Name: " + element.show.name + "<br>" +
+                                    "<img src=" + element.show.image.medium +"> <br>" +
                                     "Network: " + element.show.network.name + "<br>" + 
                                     "Status: " + element.show.status + "<br>" +
                                     "Duration: " + new Date(element.show.premiered).getFullYear() + " - Now <br>" +
