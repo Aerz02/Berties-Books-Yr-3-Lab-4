@@ -274,16 +274,18 @@ module.exports = (app, shopData) => {
                 if (err) console.log('error:', error);
                 else {
                     let showDetails = JSON.parse(body);
-                    console.log(showDetails);
+                    // console.log(showDetails);
                     if (showDetails !== undefined || showDetails.show !== undefined) {
                         var details = "";
                         showDetails.forEach(element => {
                             // show that has ended
+                            console.log(element.show.image);
                             if (element.show.ended != null) {
-                                if (element.show.network == null){
+                                if (element.show.network == null) {
+                                    
                                     var msg = 
                                     "Name: " + element.show.name + "<br>" + 
-                                    "<img src=" + element.show.image.medium +"> <br>" +
+                                    "<img src'" + element.show.image.medium + "></img> <br>" +
                                     "Network: Unknown <br>" + 
                                     "Status: " + element.show.status + "<br>" +
                                     "Duration: " + new Date(element.show.premiered).getFullYear() + " - " +  new Date(element.show.ended).getFullYear() + "<br>" +
@@ -292,7 +294,7 @@ module.exports = (app, shopData) => {
                                 else{
                                     var msg = 
                                     "Name: " + element.show.name + "<br>" +
-                                    "<img src=" + element.show.image.medium +"> <br>" +
+                                    "<img src=" + element.show.image.medium +"></img> <br>" +
                                     "Network: " + element.show.network.name + "<br>" + 
                                     "Status: " + element.show.status + "<br>" +
                                     "Duration: " + new Date(element.show.premiered).getFullYear() + " - " +  new Date(element.show.ended).getFullYear() + "<br>" +
@@ -304,7 +306,7 @@ module.exports = (app, shopData) => {
                                 if (element.show.network == null){
                                     var msg = 
                                     "Name: " + element.show.name + "<br>" +
-                                    "<img src=" + element.show.image.medium +"> <br>" +
+                                    "<img src=" + element.show.image.medium +"></img> <br>" +
                                     "Network: Unknown <br>" + 
                                     "Status: " + element.show.status + "<br>" +
                                     "Duration: " + new Date(element.show.premiered).getFullYear() + " - " +  new Date(element.show.ended).getFullYear() + "<br>" +
@@ -313,7 +315,7 @@ module.exports = (app, shopData) => {
                                 else{
                                     var msg = 
                                     "Name: " + element.show.name + "<br>" +
-                                    "<img src=" + element.show.image.medium +"> <br>" +
+                                    "<img src=" + element.show.image.medium +"></img> <br>" +
                                     "Network: " + element.show.network.name + "<br>" + 
                                     "Status: " + element.show.status + "<br>" +
                                     "Duration: " + new Date(element.show.premiered).getFullYear() + " - Now <br>" +
