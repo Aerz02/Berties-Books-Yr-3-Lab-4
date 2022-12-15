@@ -40,12 +40,12 @@ module.exports = (app, shopData) => {
     
     // registering user to database
     app.post('/registered', [
-    // check email 
-    check('email', 'Not an email').exists().isEmail(),
-    // check password
-    check('password').exists().isLength({ min: 8 }).withMessage('Password Must Be at Least 8 Characters'),
-    //checks username
-    check('username').exists().isAscii()
+        // check email 
+        check('email', 'Not an email').exists().isEmail(),
+        // check password
+        check('password').exists().isLength({ min: 8 }).withMessage('Password Must Be at Least 8 Characters'),
+        //checks username
+        check('username').exists().isAscii()
     ], (req, res) => {
         // checks validation
         const errors = validationResult(req);
@@ -70,10 +70,10 @@ module.exports = (app, shopData) => {
             });
         }
     });
-        
+    
     // login page route
     app.get('/login', (req, res) => { res.render('login.ejs', shopData) });
-
+    
     // logging in user
     app.post('/loggedin', (req, res) => {
         // user object for sanitised form inputs
@@ -94,12 +94,12 @@ module.exports = (app, shopData) => {
                     if (err) console.error(err.message);
                     // passwords match
                     else if (result) {
-                    // Save user session here, when login is successful
+                        // Save user session here, when login is successful
                         req.session.userId = user.username;
                         console.log(user.username + " has logged in successfully.");
                         res.send(user.username + " has logged in successfully " + '<a href=./>Home page</a>');
                     }
-                       // password don't match
+                    // password don't match
                     else {
                         res.send("Incorrect Password");
                         res.redirect('/login');
@@ -127,7 +127,7 @@ module.exports = (app, shopData) => {
             res.render("list.ejs", newData)
         });
     });
-            
+    
     // list users page
     app.get('/listusers', redirectLogin, (req, res) => {
         db.query("SELECT first, last, username, email FROM users", (err, result) => {
@@ -138,7 +138,7 @@ module.exports = (app, shopData) => {
             res.render("listusers.ejs", newData)
         });
     });
-        
+    
     // delete users with a given username
     app.get('/deleteusers', redirectLogin, (req, res) => {
         res.render('deleteusers.ejs', shopData);
@@ -172,16 +172,16 @@ module.exports = (app, shopData) => {
             }
         });
     });
-
+    
     // add book page route
     app.get('/addbook', redirectLogin, (req, res) => {
         res.render('addbook.ejs', shopData);
     });
-        
+    
     // adding book to database
     app.post('/bookadded', [
-    check('name').exists().isAlphanumeric(),
-    check('price').exists().isDecimal({ force_decimal: true, decimal_digits: 2, locale: 'en-US' })
+        check('name').exists().isAlphanumeric(),
+        check('price').exists().isDecimal({ force_decimal: true, decimal_digits: 2, locale: 'en-US' })
     ], (req, res) => {
         // saving data in database
         let sqlquery = "INSERT INTO books (name, price) VALUES (?,?)";
@@ -193,7 +193,7 @@ module.exports = (app, shopData) => {
             else res.send(req.body.name + " with price £" + req.body.price + " has been added. " + '<a href=./addbook>Add another book</a>');
         });
     });
-            
+    
     // select all books below £20
     app.get('/bargainbooks', redirectLogin, (req, res) => {
         let sqlquery = "SELECT * FROM books WHERE price < 20";
@@ -206,10 +206,10 @@ module.exports = (app, shopData) => {
             res.render("bargains.ejs", newData)
         });
     });
-            
+    
     //weather page route
     app.get('/weather', (req, res) => res.render('weather.ejs', shopData));
-
+    
     //weather api
     app.get('/weather-result', [check('city').exists().isAlpha()], (req, res) => {
         const request = require('request');
@@ -264,7 +264,7 @@ module.exports = (app, shopData) => {
     });
     // tv shows route
     app.get('/tvshows', (req, res) => res.render('tvshows.ejs', shopData));
-
+        
     // tv shows api
     app.get('/tvshows-result', 
     // checks if the name is has only letters and numbers
@@ -285,7 +285,7 @@ module.exports = (app, shopData) => {
                         console.log(element.show.image);
                         if (element.show.ended != null) {
                             if (element.show.network == null) {
-                                        
+                                
                                 var msg = 
                                 "Name: " + element.show.name + "<br>" + 
                                 "<img src'" + element.show.image.medium + "></img> <br>" +
